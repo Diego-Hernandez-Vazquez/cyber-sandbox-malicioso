@@ -56,6 +56,12 @@ npm run dev
 - Sube un archivo de prueba.
 - Observa cómo Docker crea el entorno, detona el archivo y genera el reporte.
 
+![Dashboard Principal](screenshots/Loading-Screen.png.png)
+*Pantalla de carga estilo terminal*
+
+![Reporte Ransomware](screenshots/Ransomware-Detection.png.png)
+*Detección de Ransomware y tráfico de red*
+
 ## DISCLAIMER
 Este proyecto fue creado con fines estrictamente educativos y de investigación. El autor no se hace responsable del mal uso de esta herramienta. Nunca ejecutes malware real en tu máquina host sin las debidas precauciones.
 
