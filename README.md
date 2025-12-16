@@ -56,10 +56,10 @@ npm run dev
 - Sube un archivo de prueba.
 - Observa cómo Docker crea el entorno, detona el archivo y genera el reporte.
 
-![Dashboard Principal](Screenshots/Loading-Screen.png.png)
+![Dashboard Principal](https://github.com/Diego-Hernandez-Vazquez/cyber-sandbox-malicioso/blob/main/Screenshots/Loading-Screen.png)
 *Pantalla de carga estilo terminal*
 
-![Reporte Ransomware](Screenshots/Ransomware-Detection.png.png)
+![Reporte Ransomware](https://github.com/Diego-Hernandez-Vazquez/cyber-sandbox-malicioso/blob/main/Screenshots/Ransomware-Detection.png)
 *Detección de Ransomware y tráfico de red*
 
 ## DISCLAIMER
