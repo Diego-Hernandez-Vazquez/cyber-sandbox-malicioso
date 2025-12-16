@@ -56,10 +56,10 @@ npm run dev
 - Sube un archivo de prueba.
 - Observa cómo Docker crea el entorno, detona el archivo y genera el reporte.
 
-![Dashboard Principal](screenshots/Loading-Screen.png.png)
+![Dashboard Principal](Screenshots/Loading-Screen.png.png)
 *Pantalla de carga estilo terminal*
 
-![Reporte Ransomware](screenshots/Ransomware-Detection.png.png)
+![Reporte Ransomware](Screenshots/Ransomware-Detection.png.png)
 *Detección de Ransomware y tráfico de red*
 
 ## DISCLAIMER
