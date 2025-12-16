@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.env
+
+# React / Node
+node_modules/
+dist/
+.DS_Store
+
+# Logs y Bases de datos
+*.log
+*.sqlite3
+
+# Archivos de prueba o evidencia
+uploads/
+mis_documentos_falsos/
+hack_evidence.txt
+*.LOCKED
+README_DECRYPT.txt

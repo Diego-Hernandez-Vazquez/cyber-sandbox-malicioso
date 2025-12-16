@@ -1,0 +1,276 @@
+/* App.css */
+:root {
+  --bg-app: #020a0f;    /* Negro azulado muy profundo */
+  --bg-panel: #0d131a;  /* Un poco más claro para las tarjetas */
+  --neon-green: #00ff41; /* Verde Matrix */
+  --neon-blue: #00e1ff;  /* Azul Cian */
+  --neon-red: #ff003c;   /* Rojo Alerta */
+  --text-main: #c7d8e8;
+  --font-mono: 'Fira Code', monospace;
+  
+  /* Efectos de resplandor */
+  --glow-green: 0 0 10px rgba(0, 255, 65, 0.5), 0 0 20px rgba(0, 255, 65, 0.2);
+  --glow-blue: 0 0 10px rgba(0, 225, 255, 0.5), 0 0 20px rgba(0, 225, 255, 0.2);
+  --border-neon: 1px solid var(--neon-blue);
+}
+
+body {
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  margin: 0;
+  min-height: 100vh;
+  /* Textura de "Scanlines" de monitor CRT antiguo */
+  background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background-size: 100% 2px, 3px 100%;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Header estilo terminal */
+.header h1 {
+  color: var(--neon-blue);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: var(--glow-blue);
+  margin-bottom: 5px;
+}
+
+.header p {
+  color: var(--neon-green);
+  font-size: 0.9rem;
+}
+.header p::before { content: "> "; } /* Añade un prompt de terminal */
+
+/* Sección de Upload y Botón */
+.upload-section {
+  background: var(--bg-panel);
+  border: var(--border-neon);
+  padding: 30px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--glow-blue);
+  margin-bottom: 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decoración de esquinas estilo HUD */
+.upload-section::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  border: 1px solid transparent;
+  background: linear-gradient(135deg, var(--neon-blue) 0%, transparent 5%) top left,
+              linear-gradient(225deg, var(--neon-blue) 0%, transparent 5%) top right,
+              linear-gradient(45deg, var(--neon-blue) 0%, transparent 5%) bottom left,
+              linear-gradient(315deg, var(--neon-blue) 0%, transparent 5%) bottom right;
+  background-size: 50% 50%;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+}
+
+
+.file-input {
+  color: var(--neon-green);
+  font-family: var(--font-mono);
+}
+
+.scan-button {
+  background: transparent;
+  color: var(--neon-green);
+  border: 1px solid var(--neon-green);
+  padding: 12px 24px;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--glow-green);
+}
+
+.scan-button:hover:not(:disabled) {
+  background: var(--neon-green);
+  color: black;
+  font-weight: bold;
+}
+
+.scan-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* --- PANTALLA DE CARGA (Terminal Loader) --- */
+.terminal-loader {
+  background: #000;
+  border: 1px solid var(--neon-green);
+  padding: 20px;
+  font-family: var(--font-mono);
+  color: var(--neon-green);
+  height: 200px;
+  overflow: hidden;
+  box-shadow: var(--glow-green);
+  position: relative;
+}
+
+/* Animación del cursor parpadeante */
+.terminal-loader::after {
+  content: '_';
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+/* Animación de texto deslizándose hacia arriba */
+.terminal-text-scroller {
+    animation: scrollUp 10s linear infinite;
+}
+
+@keyframes scrollUp {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-100%); }
+}
+
+
+/* --- Tarjetas de Resultados --- */
+.report-container {
+  display: grid;
+  gap: 20px;
+  /* Diseño de grid: Resumen arriba a la izq, Archivos arriba a la der, Red abajo ancho completo */
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: 
+    "summary files"
+    "network network";
+}
+
+.card {
+  background: var(--bg-panel);
+  border: var(--border-neon);
+  padding: 20px;
+  /* Pequeña línea brillante en la parte superior de cada tarjeta */
+  border-top: 3px solid var(--neon-blue);
+}
+
+.card h2 {
+  color: var(--neon-blue);
+  margin-top: 0;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(0, 225, 255, 0.2);
+  padding-bottom: 10px;
+}
+
+.summary { grid-area: summary; border-top-color: var(--neon-green);}
+.files { grid-area: files; border-top-color: #e3b341;}
+.network { grid-area: network; border-top-color: var(--neon-red); }
+
+
+/* Detalles del reporte */
+.hash {
+  color: var(--neon-green);
+  font-size: 0.85rem;
+}
+
+.strings-box ul {
+  list-style: none;
+  padding-left: 0;
+  font-size: 0.9rem;
+  color: rgba(199, 216, 232, 0.8);
+}
+.strings-box li::before { content: "[STR] "; color: var(--neon-blue); }
+
+/* Tablas y Tags */
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem;}
+th { text-align: left; color: var(--neon-blue); padding: 10px; border-bottom: 1px solid rgba(0,225,255,0.2); }
+td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+.danger-text { color: var(--neon-red); text-shadow: 0 0 5px var(--neon-red); }
+
+.tag {
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  border: 1px solid;
+  margin-right: 10px;
+}
+.tag.created { border-color: var(--neon-green); color: var(--neon-green); }
+.tag.modified { border-color: #e3b341; color: #e3b341; }
+
+/* --- MONITOR CCTV --- */
+.live-monitor-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.monitor-frame {
+  width: 100%;
+  height: 400px;
+  background-color: #000;
+  border: 2px solid var(--neon-red);
+  box-shadow: 0 0 20px rgba(255, 0, 60, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.vnc-screen {
+  width: 100%;
+  height: 100%;
+  border: none;
+  opacity: 0.9;
+}
+
+.rec-indicator {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  color: var(--neon-red);
+  font-weight: bold;
+  animation: blink 1s infinite;
+  z-index: 10;
+  background: rgba(0,0,0,0.5);
+  padding: 2px 5px;
+}
+
+.loading-text {
+  color: var(--neon-green);
+  font-family: var(--font-mono);
+  animation: blink 0.5s infinite alternate;
+}
+
+.boot-screen {
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: var(--neon-blue);
+  font-family: var(--font-mono);
+}
+
+.boot-screen p {
+  margin: 5px;
+  animation: blink 0.2s infinite;
+}
+
+.loader-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--bg-panel);
+  border-top: 4px solid var(--neon-green);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-top: 20px;
+}
+
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
