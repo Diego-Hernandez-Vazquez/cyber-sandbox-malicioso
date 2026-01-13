@@ -35,21 +35,21 @@ El sistema sigue una arquitectura de microservicios desacoplada para garantizar 
 
 ```mermaid
 graph TD
-    User["Usuario Frontend"] -->|Subir Archivo & Chat| API["Backend: FastAPI"]
+    User["Usuario Frontend"] -->|"Subir Archivo & Chat"| API["Backend: FastAPI"]
     
     subgraph "Motor de Análisis (Backend)"
-    API -->|1. Análisis Estático| FS["Sistema de Archivos / Hash calc"]
-    API -->|2. Reputación Global| VT["API VirusTotal"]
-    API -->|3. Detonación Dinámica| Docker["Docker Engine (Sandbox)"]
+    API -->|"1. Análisis Estático"| FS["Sistema de Archivos / Hash calc"]
+    API -->|"2. Reputación Global"| VT["API VirusTotal"]
+    API -->|"3. Detonación Dinámica"| Docker["Docker Engine (Sandbox)"]
     end
     
     subgraph "Capa de Inteligencia (AI)"
-    Docker -->|Logs Crudos (Red/Archivos/Procesos)| API
-    API -->|Contexto Completo (Logs + VT)| Ollama["Ollama: Llama3 Local"]
-    Ollama -->|Reporte Ejecutivo & Respuestas Chat| API
+    Docker -->|"Logs Crudos (Red/Archivos/Procesos)"| API
+    API -->|"Contexto Completo (Logs + VT)"| Ollama["Ollama: Llama3 Local"]
+    Ollama -->|"Reporte Ejecutivo & Respuestas Chat"| API
     end
 
-    API -->|Resultados Unificados| User
+    API -->|"Resultados Unificados"| User
 
     style Docker fill:#ff9900,stroke:#333,stroke-width:2px,color:white
     style Ollama fill:#00e1ff,stroke:#333,stroke-width:2px,color:black
@@ -137,23 +137,29 @@ ollama serve
 # En otra terminal, verifica que responda (opcional "calentamiento"):
 ollama run llama3 "Hola system check"
 
-Ejemplo de Uso
-Abrir el dashboard en http://localhost:5173.
+## Ejemplo de Uso
+1. **Iniciar el Dashboard:**
+   Abrir el navegador en `http://localhost:5173`.
 
-Subir un archivo sospechoso (ej. el script de prueba test_virus.py incluido).
+2. **Cargar Malware:**
+   Subir un archivo sospechoso (ej. el script de prueba `test_virus.py` incluido).
 
-Observar la animación de terminal mientras Docker detona el archivo.
+3. **Fase de Detonación:**
+   Observar la animación de terminal mientras Docker construye el entorno y ejecuta el malware.
 
-(Screenshots/Loading-Screen.png)
+   ![Pantalla de Carga - Terminal](Screenshots/Loading-Screen.png)
 
-Revisar el Hero Grid: El reporte de la IA a la izquierda correlacionado con el puntaje de VirusTotal a la derecha.
+4. **Resultados Forenses:**
+   Revisar el **Hero Grid**: El reporte de la IA a la izquierda correlacionado con el puntaje de VirusTotal a la derecha, seguido del análisis de red y archivos.
 
-![Static & Dynamic Analysis](Screenshots/Estatica Dinamica.png)
-![SOC Analyst Execution](Screenshots/SOC Analyst.png)
+   ![Análisis Estático y Dinámico](Screenshots/Estatica_Dinamica.png)
+   
+   ![Reporte del SOC Analyst](Screenshots/SOC_Analyst.png)
 
-Utilizar el chat inferior para preguntar: "¿Qué IPs debo bloquear en el Firewall según este análisis?".
+5. **Interacción Táctica:**
+   Utilizar el chat inferior para realizar consultas específicas, por ejemplo: *"¿Qué IPs debo bloquear en el Firewall según este análisis?"*.
 
-![Chatbot Screenshot Execution](Screenshots/Chatbot.png)
+   ![Interacción con Chatbot](Screenshots/Chatbot.png)
 
 Roadmap / Futuras Mejoras
 [x] Integración con base de datos de firmas (VirusTotal API) - ¡Completado!
