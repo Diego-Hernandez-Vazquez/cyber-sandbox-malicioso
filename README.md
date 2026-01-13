@@ -148,12 +148,12 @@ Observar la animación de terminal mientras Docker detona el archivo.
 
 Revisar el Hero Grid: El reporte de la IA a la izquierda correlacionado con el puntaje de VirusTotal a la derecha.
 
-(Screenshots/Estatica Dinamica.png)
-(Screenshots/SOC Analyst.png)
+![Static & Dynamic Analysis](Screenshots/Estatica Dinamica.png)
+![SOC Analyst Execution](Screenshots/SOC Analyst.png)
 
 Utilizar el chat inferior para preguntar: "¿Qué IPs debo bloquear en el Firewall según este análisis?".
 
-(Screenshots/Chatbot.png)
+![Chatbot Screenshot Execution](Screenshots/Chatbot.png)
 
 Roadmap / Futuras Mejoras
 [x] Integración con base de datos de firmas (VirusTotal API) - ¡Completado!
