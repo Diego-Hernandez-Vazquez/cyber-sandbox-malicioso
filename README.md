@@ -33,7 +33,6 @@ Este proyecto soluciona ese problema mediante una tríada de análisis:
 
 El sistema sigue una arquitectura de microservicios desacoplada para garantizar escalabilidad y seguridad.
 
-```mermaid
 graph TD
     User["Usuario Frontend"] -->|"Subir Archivo & Chat"| API["Backend: FastAPI"]
     
@@ -105,7 +104,6 @@ Una API Key gratuita de VirusTotal.
 git clone [https://github.com/TU_USUARIO/cyber-sandbox.git](https://github.com/TU_USUARIO/cyber-sandbox.git)
 cd cyber-sandbox
 2. Backend Setup
-Bash
 
 # 1. Crear entorno virtual (Recomendado)
 python -m venv venv
@@ -122,22 +120,23 @@ pip install -r requirements.txt
 
 # 4. Iniciar el Servidor
 python api_server.py
+
 3. Frontend Setup
 Bash
 
 cd sandbox-frontend
 npm install
 npm run dev
+
 4. Verificar IA
 Asegúrate de que Ollama esté corriendo en el puerto 11434 y tenga el modelo cargado.
-
-Bash
 
 ollama serve
 # En otra terminal, verifica que responda (opcional "calentamiento"):
 ollama run llama3 "Hola system check"
 
 ## Ejemplo de Uso
+
 1. **Iniciar el Dashboard:**
    Abrir el navegador en `http://localhost:5173`.
 
