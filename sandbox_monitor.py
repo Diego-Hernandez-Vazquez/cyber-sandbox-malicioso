@@ -6,7 +6,7 @@ import sys
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-# --- 1. Monitor de Archivos (Sin cambios) ---
+# --- 1. Monitor de Archivos ---
 class FileMonitor(FileSystemEventHandler):
     def __init__(self):
         self.activity_log = []
@@ -27,7 +27,7 @@ class FileMonitor(FileSystemEventHandler):
                 "timestamp": time.time()
             })
 
-# --- 2. Motor de Análisis Mejorado ---
+# --- 2. Motor de Análisis ---
 def run_analysis(target_path, duration=10):
     report = {
         "target": target_path,
@@ -36,6 +36,7 @@ def run_analysis(target_path, duration=10):
         "process_tree": []
     }
 
+    # Iniciar monitor de archivos
     file_handler = FileMonitor()
     observer = Observer()
     observer.schedule(file_handler, path=".", recursive=False)
@@ -43,18 +44,19 @@ def run_analysis(target_path, duration=10):
 
     print(f"[*] Iniciando análisis V2 de: {target_path}")
     
+    proc = None
     try:
+        # Ejecutar el malware (sample.py)
         proc = psutil.Popen(["python", target_path])
         start_time = time.time()
-        
-        # Lista de PIDs que ya hemos registrado para no duplicar
         seen_pids = set()
 
+        # Bucle de monitoreo (Dura 'duration' segundos)
         while (time.time() - start_time) < duration:
             if not proc.is_running():
                 break
 
-            # A. Obtener lista de procesos a vigilar (Padre + Hijos)
+            # Capturar árbol de procesos
             try:
                 children = proc.children(recursive=True)
                 all_procs = [proc] + children
@@ -62,7 +64,6 @@ def run_analysis(target_path, duration=10):
                 break
 
             for p in all_procs:
-                # 1. Registrar Procesos Nuevos en el Árbol
                 if p.pid not in seen_pids:
                     try:
                         p_info = {
@@ -76,20 +77,19 @@ def run_analysis(target_path, duration=10):
                     except (psutil.NoSuchProcess, psutil.AccessDenied):
                         pass
 
-                # 2. Monitoreo de Red (CORREGIDO y aplicado a hijos también)
+                # Capturar Red
                 try:
-                    # Usamos net_connections() para arreglar el warning
                     connections = p.net_connections(kind='inet')
                     for conn in connections:
                         conn_data = {
-                            "process": p.name(), # Saber QUIÉN hizo la conexión
+                            "process": p.name(),
                             "pid": p.pid,
                             "laddr": f"{conn.laddr.ip}:{conn.laddr.port}",
                             "raddr": f"{conn.raddr.ip}:{conn.raddr.port}" if conn.raddr else "0.0.0.0:0",
                             "status": conn.status
                         }
                         
-                        # Evitar duplicados exactos en el reporte
+                        # Evitar duplicados exactos
                         is_duplicate = False
                         for entry in report["network_activity"]:
                             if (entry["pid"] == conn_data["pid"] and 
@@ -103,34 +103,43 @@ def run_analysis(target_path, duration=10):
 
                 except (psutil.NoSuchProcess, psutil.AccessDenied):
                     pass
-
-            # B. Polling más rápido (0.05s) para atrapar conexiones fugaces
-            time.sleep(0.05)
+            
+            # Pequeña pausa para no saturar CPU
+            time.sleep(0.1)
 
     except Exception as e:
-        print(f"[!] Error crítico: {e}")
+        print(f"[!] Error crítico en ejecución: {e}")
 
     finally:
-        print("[*] Deteniendo monitores...")
+        print("[*] Finalizando monitoreo...")
         observer.stop()
         observer.join()
         
-        # Kill switch recursivo (matar padre e hijos)
-        if proc.is_running():
-            for child in proc.children(recursive=True):
-                try: child.kill() 
-                except: pass
-            proc.kill()
+        # Matar procesos si siguen vivos
+        if proc and proc.is_running():
+            try:
+                proc.kill()
+                for child in proc.children(recursive=True):
+                    try: child.kill() 
+                    except: pass
+            except: pass
         
         report["file_activity"] = file_handler.activity_log
 
     return report
 
+# --- 3. PUNTO DE ENTRADA (ESTO ES LO QUE FALTABA) ---
 if __name__ == "__main__":
-    target = "sample.py"
-    if not os.path.exists(target):
-        sys.exit(1)
+    # El archivo siempre se llamará 'sample.py' porque controller.py lo inyecta con ese nombre
+    TARGET = "sample.py"
     
-    final_report = run_analysis(target, duration=10)
-    print("\n" + "="*40)
-    print(json.dumps(final_report, indent=4))
+    # Esperamos un momento a que el archivo exista (seguridad)
+    if not os.path.exists(TARGET):
+        print(f"Error: No encuentro {TARGET}")
+        sys.exit(1)
+
+    # Corremos el análisis
+    results = run_analysis(TARGET, duration=10)
+    
+    # IMPORTANTE: Imprimimos el JSON en una sola línea para que controller.py lo lea
+    print(json.dumps(results))

@@ -1,9 +1,17 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import Dict, Any
 import shutil
 import os
 import uuid
 import controller 
+import ai_analyst
+import virustotal
+
+class ChatRequest(BaseModel):
+    question: str
+    report: Dict[str, Any]
 
 app = FastAPI(title="Malware Sandbox API", version="2.0")
 
@@ -21,8 +29,6 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 @app.post("/scan")
 async def scan_file(file: UploadFile = File(...)):
     try:
-        # 1. Guardar archivo
-        # Guardamos la extensión original para saber qué es
         original_filename = file.filename
         file_ext = os.path.splitext(original_filename)[1].lower()
         
@@ -34,15 +40,15 @@ async def scan_file(file: UploadFile = File(...)):
 
         print(f"[API] Recibido: {original_filename} ({file_ext})")
 
-        # 2. ANÁLISIS ESTÁTICO (Universal - Funciona para TODO)
-        # Esto sacará Hash y Strings aunque sea una imagen o PDF
         report = controller.perform_static_analysis(file_path)
+
+        file_hash = report["static_analysis"]["sha256"]
+
+        vt_result = virustotal.get_reputation(file_hash)
+        report["virustotal"] = vt_result
         
-        # Sobreescribimos el nombre en el reporte para que se vea el original
         report["static_analysis"]["filename"] = original_filename
 
-        # 3. ANÁLISIS DINÁMICO (Condicional)
-        # Solo ejecutamos si es Python
         if file_ext == ".py":
             print("[API] Detectado script Python. Iniciando detonación...")
             docker_client = controller.get_docker_client()
@@ -50,7 +56,6 @@ async def scan_file(file: UploadFile = File(...)):
             report["dynamic_analysis"] = dynamic_results
         else:
             print("[API] Archivo no ejecutable. Saltando Sandbox.")
-            # Creamos un reporte "dummy" para que el Frontend no se rompa
             report["dynamic_analysis"] = {
                 "status": "skipped",
                 "reason": f"El tipo de archivo '{file_ext}' no es soportado por el motor de ejecución dinámica actual.",
@@ -58,7 +63,9 @@ async def scan_file(file: UploadFile = File(...)):
                 "file_activity": []
             }
 
-        # 4. Limpieza
+        print("[API] Enviando logs al contenedor de IA...")
+        report["ai_analysis"] = ai_analyst.analyze_report(report)
+
         if os.path.exists(file_path):
             os.remove(file_path)
 
@@ -69,7 +76,15 @@ async def scan_file(file: UploadFile = File(...)):
             os.remove(file_path)
         print(f"[API ERROR] {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
-
+    
+@app.post("/chat")
+async def chat_endpoint(request: ChatRequest):
+    try:
+        answer = ai_analyst.chat_with_analyst(request.question, request.report)
+        return {"answer": answer}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

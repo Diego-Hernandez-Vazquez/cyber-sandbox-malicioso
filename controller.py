@@ -11,7 +11,6 @@ IMAGE_NAME = "malware-sandbox:latest"
 SAMPLE_FILENAME = "sample.py"
 MONITOR_FILENAME = "sandbox_monitor.py"
 
-# --- MÓDULO 1: ANÁLISIS ESTÁTICO ---
 def get_sha256(file_path):
     sha256_hash = hashlib.sha256()
     with open(file_path, "rb") as f:
@@ -38,15 +37,12 @@ def perform_static_analysis(file_path):
         }
     }
 
-# --- MÓDULO 2: ANÁLISIS DINÁMICO (DOCKER) ---
 def get_docker_client():
     client = docker.from_env()
     try:
-        # Intentamos obtener la imagen directamente
         client.images.get(IMAGE_NAME)
         print(f"[*] Imagen '{IMAGE_NAME}' encontrada. Saltando construcción.")
     except docker.errors.ImageNotFound:
-        # Solo construimos si NO existe
         print(f"[*] Imagen no encontrada. Construyendo {IMAGE_NAME}...")
         client.images.build(path=".", tag=IMAGE_NAME, rm=True)
     return client
@@ -62,7 +58,6 @@ def analyze_dynamic(client, sample_path):
     )
 
     try:
-        # Inyectar Sample
         with open(sample_path, 'rb') as f:
             data = f.read()
         tar_stream = io.BytesIO()
@@ -73,20 +68,15 @@ def analyze_dynamic(client, sample_path):
         tar_stream.seek(0)
         container.put_archive('/app/', tar_stream)
 
-        # Arrancar
         container.start()
         
-        # Esperar máximo 15 segundos (Si el malware tarda más, lo cortamos)
         result = container.wait(timeout=15)
         
-        # Leer Logs
         logs = container.logs().decode('utf-8')
         
-        # --- AGREGA ESTO PARA VER EL ERROR EN TU CONSOLA ---
         print("\n" + "="*20 + " LOGS DEL CONTENEDOR " + "="*20)
         print(logs)
         print("="*60 + "\n")
-        # ---------------------------------------------------
         
         json_start = logs.find('{')
         json_end = logs.rfind('}') + 1
@@ -103,7 +93,3 @@ def analyze_dynamic(client, sample_path):
             container.remove(force=True)
         except:
             pass
-
-# --- ORQUESTADOR ---
-if __name__ == "__main__":
-    pass
