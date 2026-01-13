@@ -1,4 +1,4 @@
-# 🛡️ Cyber-Sentinel: AI-Powered Malware Sandbox
+# Cyber-Sandbox: AI-Powered Malware Sandbox
 
 ![Project Status](https://img.shields.io/badge/Status-MVP_Complete-success)
 ![Python](https://img.shields.io/badge/Backend-FastAPI-blue?logo=fastapi)
@@ -10,14 +10,14 @@
 
 ---
 
-## 📸 Demo Dashboard
+## Dashboard
 
-![Dashboard Overview Ransomware Detection](screenshots/hero-shot-detected.png)
+![Dashboard Overview Ransomware Detection](Screenshots/Ransomware-Detection.png)
 *(Vista principal mostrando un análisis crítico: La IA correlaciona el comportamiento de Ransomware local con la inteligencia global de VirusTotal)*
 
 ---
 
-## 🚀 Propuesta de Valor
+## Propuesta inicial
 
 En el panorama actual de ciberseguridad, la **fatiga de alertas** es un problema crítico. Los analistas de SOC Nivel 1 reciben miles de logs técnicos que requieren demasiado tiempo para interpretar manualmente.
 
@@ -29,23 +29,23 @@ Este proyecto soluciona ese problema mediante una tríada de análisis:
 
 ---
 
-## 🏗️ Arquitectura del Sistema
+## Arquitectura del Sistema
 
 El sistema sigue una arquitectura de microservicios desacoplada para garantizar escalabilidad y seguridad.
 
 ```mermaid
 graph TD
-    User[Usuario Frontend] -->|Subir Archivo & Chat| API[Backend: FastAPI]
+    User["Usuario Frontend"] -->|Subir Archivo & Chat| API["Backend: FastAPI"]
     
     subgraph "Motor de Análisis (Backend)"
-    API -->|1. Análisis Estático| FS[Sistema de Archivos / Hash calc]
-    API -->|2. Reputación Global| VT[API VirusTotal]
-    API -->|3. Detonación Dinámica| Docker[Docker Engine (Sandbox)]
+    API -->|1. Análisis Estático| FS["Sistema de Archivos / Hash calc"]
+    API -->|2. Reputación Global| VT["API VirusTotal"]
+    API -->|3. Detonación Dinámica| Docker["Docker Engine (Sandbox)"]
     end
     
     subgraph "Capa de Inteligencia (AI)"
     Docker -->|Logs Crudos (Red/Archivos/Procesos)| API
-    API -->|Contexto Completo (Logs + VT)| Ollama[Ollama: Llama3 Local]
+    API -->|Contexto Completo (Logs + VT)| Ollama["Ollama: Llama3 Local"]
     Ollama -->|Reporte Ejecutivo & Respuestas Chat| API
     end
 
@@ -53,6 +53,7 @@ graph TD
 
     style Docker fill:#ff9900,stroke:#333,stroke-width:2px,color:white
     style Ollama fill:#00e1ff,stroke:#333,stroke-width:2px,color:black
+
 Tecnologías Clave:
 Core Engine: Python 3.10 + FastAPI (Procesamiento asíncrono).
 
@@ -66,7 +67,7 @@ Frontend: React + Vite con diseño UI Cyberpunk/Terminal (CSS personalizado).
 
 Forensics: Librerías psutil, watchdog y análisis de hash SHA256.
 
-✨ Características Principales
+Características Principales
 1. Análisis Estático, Dinámico y Global
 Estático: Extracción inmediata de metadatos, cálculo de Hash (SHA256) y extracción de "Interesting Strings" ofuscados.
 
@@ -87,7 +88,7 @@ Reportes Ejecutivos: Genera un resumen claro en lenguaje natural clasificando el
 
 Chat Táctico Interactivo: Interfaz de chat integrada donde el analista humano puede preguntar estrategias de mitigación específicas basadas en el contexto exacto del malware analizado.
 
-🛠️ Instalación y Despliegue Local
+Instalación y Despliegue Local
 Prerrequisitos
 Docker Desktop instalado y corriendo (con soporte para Linux containers).
 
@@ -100,7 +101,6 @@ Ollama instalado y el modelo Llama3 descargado (ollama pull llama3).
 Una API Key gratuita de VirusTotal.
 
 1. Clonar el Repositorio
-Bash
 
 git clone [https://github.com/TU_USUARIO/cyber-sandbox.git](https://github.com/TU_USUARIO/cyber-sandbox.git)
 cd cyber-sandbox
@@ -136,18 +136,26 @@ Bash
 ollama serve
 # En otra terminal, verifica que responda (opcional "calentamiento"):
 ollama run llama3 "Hola system check"
-🧪 Ejemplo de Uso
+
+Ejemplo de Uso
 Abrir el dashboard en http://localhost:5173.
 
 Subir un archivo sospechoso (ej. el script de prueba test_virus.py incluido).
 
 Observar la animación de terminal mientras Docker detona el archivo.
 
+(Screenshots/Loading-Screen.png)
+
 Revisar el Hero Grid: El reporte de la IA a la izquierda correlacionado con el puntaje de VirusTotal a la derecha.
+
+(Screenshots/Estatica Dinamica.png)
+(Screenshots/SOC Analyst.png)
 
 Utilizar el chat inferior para preguntar: "¿Qué IPs debo bloquear en el Firewall según este análisis?".
 
-🔮 Roadmap / Futuras Mejoras
+(Screenshots/Chatbot.png)
+
+Roadmap / Futuras Mejoras
 [x] Integración con base de datos de firmas (VirusTotal API) - ¡Completado!
 
 [x] Chat interactivo con contexto del reporte - ¡Completado!
@@ -158,5 +166,5 @@ Utilizar el chat inferior para preguntar: "¿Qué IPs debo bloquear en el Firewa
 
 [ ] Exportación de reportes finales en PDF.
 
-👨‍💻 Autor
+👨 Autor
 Diego Hernández Vázquez Estudiante de Ingeniería en Sistemas Computacionales | Especialidad en Ciberseguridad Desarrollador Full Stack & Cloud Enthusiast

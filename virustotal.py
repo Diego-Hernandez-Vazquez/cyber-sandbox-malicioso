@@ -2,7 +2,7 @@ import requests
 import os
 
 # Carga la API Key de una variable de entorno para mayor seguridad
-API_KEY = "72b717f29e4a41e0e2b17bc709ec9064829399c9824fb86588e54da5c4e8447a"
+API_KEY = "YOUR_API_KEY_HERE"  # Reemplaza con tu clave real
 
 BASE_URL = "https://www.virustotal.com/api/v3/files"
 

@@ -139,7 +139,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # Corremos el análisis
-    results = run_analysis(TARGET, duration=10)
+    results = run_analysis(TARGET, duration=60)
     
     # IMPORTANTE: Imprimimos el JSON en una sola línea para que controller.py lo lea
     print(json.dumps(results))
